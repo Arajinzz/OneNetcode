@@ -16,34 +16,34 @@ public class Player : MonoBehaviour
         cameraTransform = Camera.main.transform;
     }
 
-    private void FixedUpdate()
+    public void PhysicsStep(Structs.Inputs inputs, float deltatime)
     {
         if (cameraTransform == null)
             return;
 
-        if (Input.GetKey(KeyCode.W))
+        if (inputs.up)
         {
-            rigidbody.AddForce(cameraTransform.forward * movementImpulse * Time.fixedDeltaTime, ForceMode.Impulse);
+            rigidbody.AddForce(cameraTransform.forward * movementImpulse * deltatime, ForceMode.Impulse);
         }
 
-        if (Input.GetKey(KeyCode.S))
+        if (inputs.down)
         {
-            rigidbody.AddForce(-cameraTransform.forward * movementImpulse * Time.fixedDeltaTime, ForceMode.Impulse);
+            rigidbody.AddForce(-cameraTransform.forward * movementImpulse * deltatime, ForceMode.Impulse);
         }
 
-        if (Input.GetKey(KeyCode.A))
+        if (inputs.left)
         {
-            rigidbody.AddForce(-cameraTransform.right * movementImpulse * Time.fixedDeltaTime, ForceMode.Impulse);
+            rigidbody.AddForce(-cameraTransform.right * movementImpulse * deltatime, ForceMode.Impulse);
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if (inputs.right)
         {
-            rigidbody.AddForce(cameraTransform.right * movementImpulse * Time.fixedDeltaTime, ForceMode.Impulse);
+            rigidbody.AddForce(cameraTransform.right * movementImpulse * deltatime, ForceMode.Impulse);
         }
 
-        if (transform.position.y <= jumpThreshold && Input.GetKey(KeyCode.Space))
+        if (transform.position.y <= jumpThreshold && inputs.jump)
         {
-            rigidbody.AddForce(cameraTransform.up * movementImpulse * Time.fixedDeltaTime, ForceMode.Impulse);
+            rigidbody.AddForce(cameraTransform.up * movementImpulse * deltatime, ForceMode.Impulse);
         }
     }
 }
