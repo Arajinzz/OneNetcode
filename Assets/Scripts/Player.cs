@@ -7,6 +7,9 @@ public class Player : MonoBehaviour
     public float movementImpulse;
     public float jumpThreshold;
 
+    [SerializeField]
+    GameObject toIgnore;
+
     private Transform cameraTransform;
     new private Rigidbody rigidbody;
 
@@ -14,6 +17,11 @@ public class Player : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         cameraTransform = Camera.main.transform;
+
+        // This is to make a more realistic peer simulation
+        // Will instatiate another object which represents a player in other peer environement
+        // This way the lag will be simulated correctly
+        Physics.IgnoreCollision(toIgnore.GetComponentInChildren<Collider>(), GetComponentInChildren<Collider>());
     }
 
     public void PhysicsStep(Structs.Inputs inputs, float deltatime)
