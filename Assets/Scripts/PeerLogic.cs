@@ -22,13 +22,13 @@ public class PeerLogic : MonoBehaviour
     PeerLogic otherPeer;
 
     [SerializeField]
-    GameObject localPlayer; // My player
-
-    [SerializeField]
-    GameObject netPlayer; // Another player
+    GameObject localPlayer; // My local player
 
     [SerializeField]
     GameObject displaySimulationOnNetPlayer; /* How local player moved on the other peer. */
+
+    [SerializeField]
+    GameObject otherPlayerOnMyMachine; /* Other player on my machine. */
 
     [SerializeField]
     GameObject proxyPlayer;
@@ -96,9 +96,12 @@ public class PeerLogic : MonoBehaviour
             {
                 Structs.StateMessage stateMsg = peerReceivedInputs.Dequeue();
 
+                otherPlayerOnMyMachine.transform.position = stateMsg.position;
+                otherPlayerOnMyMachine.transform.rotation = stateMsg.rotation;
+
                 // Simulate physics on the imaginary displaySimulationOnNetPlayer
-                displaySimulationOnNetPlayer.transform.position = stateMsg.position;
-                displaySimulationOnNetPlayer.transform.rotation = stateMsg.rotation;
+                displaySimulationOnNetPlayer.transform.position = otherPlayerOnMyMachine.transform.position;
+                displaySimulationOnNetPlayer.transform.rotation = otherPlayerOnMyMachine.transform.rotation;
             }
 
             currentTick++;

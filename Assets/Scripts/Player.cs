@@ -21,7 +21,8 @@ public class Player : MonoBehaviour
         // This is to make a more realistic peer simulation
         // Will instatiate another object which represents a player in other peer environement
         // This way the lag will be simulated correctly
-        Physics.IgnoreCollision(toIgnore.GetComponentInChildren<Collider>(), GetComponentInChildren<Collider>());
+        if (toIgnore)
+            Physics.IgnoreCollision(toIgnore.GetComponentInChildren<Collider>(), GetComponentInChildren<Collider>());
     }
 
     public void PhysicsStep(Structs.Inputs inputs, float deltatime)
