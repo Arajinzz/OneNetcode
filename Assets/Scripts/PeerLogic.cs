@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PeerLogic : MonoBehaviour
 {
@@ -32,6 +33,11 @@ public class PeerLogic : MonoBehaviour
 
     [SerializeField]
     GameObject proxyPlayer;
+    
+    // To avoid calling Physics.Simulate a lot in one scene [in one tick]
+    // it makes physics bad
+    private Scene playerScene;
+    private PhysicsScene playerPhysicsScene;
 
     [SerializeField]
     ControlsSchema whatControls;
@@ -53,6 +59,25 @@ public class PeerLogic : MonoBehaviour
         currentTick = 0;
         minTimeBetweenTicks = 1 / PEER_TICK_RATE;
         peerReceivedInputs = new Queue<Structs.StateMessage>();
+
+        if (whatControls == ControlsSchema.Player1)
+        {
+            playerScene = SceneManager.LoadScene(
+                "Player1Scene",
+                new LoadSceneParameters() { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D }
+            );
+        } else
+        {
+            playerScene = SceneManager.LoadScene(
+                "Player2Scene",
+                new LoadSceneParameters() { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D }
+            );
+        }
+
+        playerPhysicsScene = playerScene.GetPhysicsScene();
+
+        SceneManager.MoveGameObjectToScene(localPlayer, playerScene);
+        SceneManager.MoveGameObjectToScene(otherPlayerOnMyMachine, playerScene);
     }
 
 
@@ -77,6 +102,7 @@ public class PeerLogic : MonoBehaviour
             Structs.StateMessage stateMessage;
             stateMessage.delivery_time = Time.time + 0.1f; // time + lag(to simulate ping)
             stateMessage.tick_number = currentTick;
+            stateMessage.inputs = inputs;
             stateMessage.position = localPlayer.transform.position;
             stateMessage.rotation = localPlayer.transform.rotation;
             stateMessage.velocity = localPlayer.GetComponent<Rigidbody>().velocity;
@@ -96,12 +122,19 @@ public class PeerLogic : MonoBehaviour
             {
                 Structs.StateMessage stateMsg = peerReceivedInputs.Dequeue();
 
+                // Simulate input
+                otherPlayerOnMyMachine.GetComponent<Player>().PhysicsStep(stateMsg.inputs, minTimeBetweenTicks);
+                playerPhysicsScene.Simulate(Time.fixedDeltaTime);
+
+                // Correct mouvement
                 otherPlayerOnMyMachine.transform.position = stateMsg.position;
                 otherPlayerOnMyMachine.transform.rotation = stateMsg.rotation;
+                otherPlayerOnMyMachine.GetComponent<Rigidbody>().velocity = stateMessage.velocity;
+                otherPlayerOnMyMachine.GetComponent<Rigidbody>().angularVelocity = stateMessage.angular_velocity;
 
                 // Simulate physics on the imaginary displaySimulationOnNetPlayer
-                displaySimulationOnNetPlayer.transform.position = otherPlayerOnMyMachine.transform.position;
-                displaySimulationOnNetPlayer.transform.rotation = otherPlayerOnMyMachine.transform.rotation;
+                //displaySimulationOnNetPlayer.transform.position = otherPlayerOnMyMachine.transform.position;
+                //displaySimulationOnNetPlayer.transform.rotation = otherPlayerOnMyMachine.transform.rotation;
             }
 
             currentTick++;

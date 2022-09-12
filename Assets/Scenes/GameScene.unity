@@ -216,8 +216,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 302907038}
-  m_Father: {fileID: 471715576}
-  m_RootOrder: 3
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &178119002
 GameObject:
@@ -363,8 +363,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 471715576}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &267833972
 MonoBehaviour:
@@ -662,8 +662,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2080802574}
-  m_Father: {fileID: 471715576}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &373054170
 MonoBehaviour:
@@ -677,8 +677,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4783b33eeccb5ce45b7337b8bfc81da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementImpulse: 20
-  jumpThreshold: 20
   toIgnore: {fileID: 1585945914}
 --- !u!54 &373054171
 Rigidbody:
@@ -696,41 +694,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!1 &471715575
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 471715576}
-  m_Layer: 0
-  m_Name: P2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &471715576
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 471715575}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 267833971}
-  - {fileID: 1585945917}
-  - {fileID: 373054169}
-  - {fileID: 163484150}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &540888312
 GameObject:
   m_ObjectHideFlags: 0
@@ -798,7 +761,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e2bda1b5975e63f43b7c9f03b3cef7e4, type: 2}
+  - {fileID: 2100000, guid: aa2634f4709242a4cb0d943f19f5770d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -940,8 +903,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 559424206}
-  m_Father: {fileID: 1512140625}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &632630159
 MonoBehaviour:
@@ -955,8 +918,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4783b33eeccb5ce45b7337b8bfc81da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementImpulse: 30
-  jumpThreshold: 20
   toIgnore: {fileID: 1585945914}
 --- !u!1 &856269820
 GameObject:
@@ -987,8 +948,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 84039048}
-  m_Father: {fileID: 1512140625}
-  m_RootOrder: 3
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &858948157
 GameObject:
@@ -1530,7 +1491,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 78ce4d688acd2424eb7b599934a96e94, type: 2}
+  - {fileID: 2100000, guid: aa2634f4709242a4cb0d943f19f5770d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1591,8 +1552,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 58561191}
-  m_Father: {fileID: 1512140625}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1259029293
 MonoBehaviour:
@@ -1606,8 +1567,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4783b33eeccb5ce45b7337b8bfc81da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementImpulse: 30
-  jumpThreshold: 20
   toIgnore: {fileID: 632630156}
 --- !u!54 &1259029294
 Rigidbody:
@@ -1820,8 +1779,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1512140625}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1467573344
 MonoBehaviour:
@@ -1841,41 +1800,6 @@ MonoBehaviour:
   otherPlayerOnMyMachine: {fileID: 373054168}
   proxyPlayer: {fileID: 0}
   whatControls: 0
---- !u!1 &1512140624
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1512140625}
-  m_Layer: 0
-  m_Name: P1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1512140625
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1512140624}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1467573343}
-  - {fileID: 632630158}
-  - {fileID: 1259029292}
-  - {fileID: 856269823}
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1585945914
 GameObject:
   m_ObjectHideFlags: 0
@@ -1906,8 +1830,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4783b33eeccb5ce45b7337b8bfc81da5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementImpulse: 20
-  jumpThreshold: 20
   toIgnore: {fileID: 632630156}
 --- !u!54 &1585945916
 Rigidbody:
@@ -1938,8 +1860,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1052340162}
-  m_Father: {fileID: 471715576}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &2000304301
 Mesh:

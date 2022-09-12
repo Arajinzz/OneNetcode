@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float movementImpulse;
-    public float jumpThreshold;
+    private float movementImpulse;
+    private float jumpThreshold;
 
     [SerializeField]
     GameObject toIgnore;
@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        movementImpulse = 25f;
+        jumpThreshold = 10f;
         rigidbody = GetComponent<Rigidbody>();
         cameraTransform = Camera.main.transform;
 

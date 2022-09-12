@@ -30,9 +30,10 @@ public class Structs
     {
         public float delivery_time;
         public uint tick_number;
-        public Vector3 position;
-        public Quaternion rotation;
-        public Vector3 velocity;
-        public Vector3 angular_velocity;
+        public Inputs inputs;
+        public Vector3 position; // 12 bytes
+        public Quaternion rotation; // 16 bytes
+        public Vector3 velocity; // 12 bytes
+        public Vector3 angular_velocity; // 12 bytes
     }
 }
