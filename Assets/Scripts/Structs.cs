@@ -16,21 +16,22 @@ public class Structs
     public struct InputMessage
     {
         public float delivery_time;
+        public uint playerId;
         public Inputs inputs;
     }
 
     public struct PlayerState
     {
+        public Inputs inputs;
         public Vector3 position;
         public Quaternion rotation;
-        public Vector3 velocity;
     }
 
     public struct StateMessage
     {
         public float delivery_time;
         public uint tick_number;
-        public Inputs inputs;
+        public uint playerId;
         public Vector3 position; // 12 bytes
         public Quaternion rotation; // 16 bytes
         public Vector3 velocity; // 12 bytes

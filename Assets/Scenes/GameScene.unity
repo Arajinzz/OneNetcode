@@ -378,6 +378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2520c7f96f4b74dbbf0ef0d1534d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amIAServer: 0
+  playerId: 1
   otherPeer: {fileID: 1467573344}
   localPlayer: {fileID: 1585945914}
   displaySimulationOnNetPlayer: {fileID: 163484147}
@@ -1794,6 +1796,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd2520c7f96f4b74dbbf0ef0d1534d48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  amIAServer: 1
+  playerId: 0
   otherPeer: {fileID: 267833972}
   localPlayer: {fileID: 632630156}
   displaySimulationOnNetPlayer: {fileID: 856269820}

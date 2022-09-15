@@ -20,74 +20,78 @@ public class PeerLogic : MonoBehaviour
      */
 
     [SerializeField]
+    bool amIAServer;
+
+    [SerializeField]
+    uint playerId = 0;
+
+    [SerializeField]
     PeerLogic otherPeer;
 
     [SerializeField]
     GameObject localPlayer; // My local player
 
     [SerializeField]
-    GameObject displaySimulationOnNetPlayer; /* How local player moved on the other peer. */
+    GameObject myPlayerOnServer; // My player on the server
 
     [SerializeField]
-    GameObject otherPlayerOnMyMachine; /* Other player on my machine. */
-
-    [SerializeField]
-    GameObject proxyPlayer;
+    GameObject displayMyPlayerOnServer; // To display how my player behave on the server
     
     // To avoid calling Physics.Simulate a lot in one scene [in one tick]
     // it makes physics bad
-    private Scene playerScene;
-    private PhysicsScene playerPhysicsScene;
+    private Scene serverScene; 
+    private PhysicsScene serverPhysicsScene;
 
     [SerializeField]
     ControlsSchema whatControls;
 
     // to run at fixed tick rate
-    private float timer;
+    private float peerTimer;
     private uint currentTick;
     private float minTimeBetweenTicks;
-    private float PEER_TICK_RATE = 60f;
+    private const float PEER_TICK_RATE = 60f;
+    private const float latency = 0.1f;
 
-    public Queue<Structs.StateMessage> peerReceivedInputs;
+    private const int peerBufferSize = 1024;
+    private Structs.PlayerState[] peerBufferStates; // Holds position of local player at a given tick
+
+    public Queue<Structs.InputMessage> peerReceivedInputs;
+    public Queue<Structs.StateMessage> peerReceivedStates;
 
     void Start()
     {
         Physics.autoSimulation = false;
         Application.targetFrameRate = 60;
 
-        timer = 0.0f;
+        peerTimer = 0.0f;
         currentTick = 0;
         minTimeBetweenTicks = 1 / PEER_TICK_RATE;
-        peerReceivedInputs = new Queue<Structs.StateMessage>();
+        peerReceivedStates = new Queue<Structs.StateMessage>();
+        peerReceivedInputs = new Queue<Structs.InputMessage>();
 
-        if (whatControls == ControlsSchema.Player1)
+        peerBufferStates = new Structs.PlayerState[peerBufferSize];
+
+        if (amIAServer)
         {
-            playerScene = SceneManager.LoadScene(
-                "Player1Scene",
+            serverScene = SceneManager.LoadScene(
+                "ServerScene",
                 new LoadSceneParameters() { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D }
             );
-        } else
-        {
-            playerScene = SceneManager.LoadScene(
-                "Player2Scene",
-                new LoadSceneParameters() { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D }
-            );
+
+            serverPhysicsScene = serverScene.GetPhysicsScene();
+
+            SceneManager.MoveGameObjectToScene(myPlayerOnServer, serverScene);
         }
-
-        playerPhysicsScene = playerScene.GetPhysicsScene();
-
-        SceneManager.MoveGameObjectToScene(localPlayer, playerScene);
-        SceneManager.MoveGameObjectToScene(otherPlayerOnMyMachine, playerScene);
     }
 
 
     void Update()
     {
-        timer += Time.deltaTime;
+        peerTimer += Time.deltaTime;
 
-        while (timer >= minTimeBetweenTicks)
+        while (peerTimer >= minTimeBetweenTicks)
         {
-            timer -= minTimeBetweenTicks;
+            peerTimer -= minTimeBetweenTicks;
 
             // Handle a tick
 
@@ -99,16 +103,26 @@ public class PeerLogic : MonoBehaviour
             Physics.Simulate(minTimeBetweenTicks);
 
             // Send simulation result to other player
-            Structs.StateMessage stateMessage;
-            stateMessage.delivery_time = Time.time + 0.1f; // time + lag(to simulate ping)
-            stateMessage.tick_number = currentTick;
-            stateMessage.inputs = inputs;
-            stateMessage.position = localPlayer.transform.position;
-            stateMessage.rotation = localPlayer.transform.rotation;
-            stateMessage.velocity = localPlayer.GetComponent<Rigidbody>().velocity;
-            stateMessage.angular_velocity = localPlayer.GetComponent<Rigidbody>().angularVelocity;
+            //Structs.StateMessage stateMessage;
+            //stateMessage.delivery_time = Time.time + latency; // time + lag(to simulate ping)
+            //stateMessage.tick_number = currentTick;
+            //stateMessage.playerId = playerId;
+            //stateMessage.position = localPlayer.transform.position;
+            //stateMessage.rotation = localPlayer.transform.rotation;
+            //stateMessage.velocity = localPlayer.GetComponent<Rigidbody>().velocity;
+            //stateMessage.angular_velocity = localPlayer.GetComponent<Rigidbody>().angularVelocity;
 
-            otherPeer.peerReceivedInputs.Enqueue(stateMessage);
+            Structs.InputMessage inputMsg;
+            inputMsg.delivery_time = Time.time + latency;
+            inputMsg.playerId = playerId;
+            inputMsg.inputs = inputs;
+
+            if (!amIAServer)
+                otherPeer.peerReceivedInputs.Enqueue(inputMsg);
+            else // If am i a server send message to my self
+                peerReceivedInputs.Enqueue(inputMsg);
+
+            currentTick++;
 
             // Now simulate what happens when we receive a state from another player
 
@@ -117,27 +131,31 @@ public class PeerLogic : MonoBehaviour
              * and if latest state received is in the past (means should be simulated),
              * this is a bad phrasing i should explain this more
              */
-            while(peerReceivedInputs.Count > 0 &&
-                  Time.time >= peerReceivedInputs.Peek().delivery_time)
+            if (peerReceivedInputs.Count > 0 &&
+                Time.time >= peerReceivedInputs.Peek().delivery_time)
             {
-                Structs.StateMessage stateMsg = peerReceivedInputs.Dequeue();
+                Structs.InputMessage stateMsg = peerReceivedInputs.Dequeue();
+
+                while (peerReceivedInputs.Count > 0 &&
+                       Time.time >= peerReceivedInputs.Peek().delivery_time)
+                {
+                    stateMsg = peerReceivedInputs.Dequeue();
+                }
 
                 // Simulate input
-                otherPlayerOnMyMachine.GetComponent<Player>().PhysicsStep(stateMsg.inputs, minTimeBetweenTicks);
-                playerPhysicsScene.Simulate(Time.fixedDeltaTime);
+                myPlayerOnServer.GetComponent<Player>().PhysicsStep(stateMsg.inputs, minTimeBetweenTicks);
+                serverPhysicsScene.Simulate(Time.fixedDeltaTime);
 
-                // Correct mouvement
-                otherPlayerOnMyMachine.transform.position = stateMsg.position;
-                otherPlayerOnMyMachine.transform.rotation = stateMsg.rotation;
-                otherPlayerOnMyMachine.GetComponent<Rigidbody>().velocity = stateMessage.velocity;
-                otherPlayerOnMyMachine.GetComponent<Rigidbody>().angularVelocity = stateMessage.angular_velocity;
+                // To see how my player moves on the server
+                displayMyPlayerOnServer.transform.position = myPlayerOnServer.transform.position;
+                displayMyPlayerOnServer.transform.rotation = myPlayerOnServer.transform.rotation;
 
-                // Simulate physics on the imaginary displaySimulationOnNetPlayer
-                //displaySimulationOnNetPlayer.transform.position = otherPlayerOnMyMachine.transform.position;
-                //displaySimulationOnNetPlayer.transform.rotation = otherPlayerOnMyMachine.transform.rotation;
+                // Correction
+                //otherPlayerOnMyMachine.transform.position = stateMsg.position;
+                //otherPlayerOnMyMachine.transform.rotation = stateMsg.rotation;
+                //otherPlayerOnMyMachine.GetComponent<Rigidbody>().velocity = stateMessage.velocity;
+                //otherPlayerOnMyMachine.GetComponent<Rigidbody>().angularVelocity = stateMessage.angular_velocity;
             }
-
-            currentTick++;
         }
     }
 
