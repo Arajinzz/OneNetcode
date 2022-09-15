@@ -16,6 +16,7 @@ public class Structs
     public struct InputMessage
     {
         public float delivery_time;
+        public uint tick_number;
         public uint playerId;
         public Inputs inputs;
     }

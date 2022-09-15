@@ -102,19 +102,10 @@ public class PeerLogic : MonoBehaviour
             localPlayer.GetComponent<Player>().PhysicsStep(inputs, minTimeBetweenTicks);
             Physics.Simulate(minTimeBetweenTicks);
 
-            // Send simulation result to other player
-            //Structs.StateMessage stateMessage;
-            //stateMessage.delivery_time = Time.time + latency; // time + lag(to simulate ping)
-            //stateMessage.tick_number = currentTick;
-            //stateMessage.playerId = playerId;
-            //stateMessage.position = localPlayer.transform.position;
-            //stateMessage.rotation = localPlayer.transform.rotation;
-            //stateMessage.velocity = localPlayer.GetComponent<Rigidbody>().velocity;
-            //stateMessage.angular_velocity = localPlayer.GetComponent<Rigidbody>().angularVelocity;
-
             Structs.InputMessage inputMsg;
             inputMsg.delivery_time = Time.time + latency;
             inputMsg.playerId = playerId;
+            inputMsg.tick_number = currentTick;
             inputMsg.inputs = inputs;
 
             if (!amIAServer)
@@ -124,13 +115,34 @@ public class PeerLogic : MonoBehaviour
 
             currentTick++;
 
-            // Now simulate what happens when we receive a state from another player
-
+            // Now simulate what happens when we receive a state from the server
             /*
              * First check if we have some states in the queue that needs to simulated,
              * and if latest state received is in the past (means should be simulated),
              * this is a bad phrasing i should explain this more
              */
+
+            if (peerReceivedStates.Count > 0 &&
+                Time.time >= peerReceivedStates.Peek().delivery_time)
+            {
+
+                Structs.StateMessage stateMsg = peerReceivedStates.Dequeue();
+
+                while (peerReceivedStates.Count > 0 &&
+                       Time.time >= peerReceivedStates.Peek().delivery_time)
+                {
+                    stateMsg = peerReceivedStates.Dequeue();
+                }
+
+                // Hard Correction
+                localPlayer.transform.position = stateMsg.position;
+                localPlayer.transform.rotation = stateMsg.rotation;
+                localPlayer.GetComponent<Rigidbody>().velocity = stateMsg.velocity;
+                localPlayer.GetComponent<Rigidbody>().angularVelocity = stateMsg.angular_velocity;
+
+            }
+
+                /* Server Logic */
             if (peerReceivedInputs.Count > 0 &&
                 Time.time >= peerReceivedInputs.Peek().delivery_time)
             {
@@ -144,17 +156,26 @@ public class PeerLogic : MonoBehaviour
 
                 // Simulate input
                 myPlayerOnServer.GetComponent<Player>().PhysicsStep(stateMsg.inputs, minTimeBetweenTicks);
-                serverPhysicsScene.Simulate(Time.fixedDeltaTime);
+                serverPhysicsScene.Simulate(minTimeBetweenTicks);
+
+                // Send simulation result to the player
+                Structs.StateMessage stateMessage;
+                stateMessage.delivery_time = Time.time + latency; // time + lag(to simulate ping)
+                stateMessage.tick_number = inputMsg.tick_number + 1;
+                stateMessage.playerId = inputMsg.playerId;
+                stateMessage.position = myPlayerOnServer.transform.position;
+                stateMessage.rotation = myPlayerOnServer.transform.rotation;
+                stateMessage.velocity = myPlayerOnServer.GetComponent<Rigidbody>().velocity;
+                stateMessage.angular_velocity = myPlayerOnServer.GetComponent<Rigidbody>().angularVelocity;
+
+                if (inputMsg.playerId == playerId)
+                    peerReceivedStates.Enqueue(stateMessage);
+                else
+                    otherPeer.peerReceivedStates.Enqueue(stateMessage);
 
                 // To see how my player moves on the server
                 displayMyPlayerOnServer.transform.position = myPlayerOnServer.transform.position;
                 displayMyPlayerOnServer.transform.rotation = myPlayerOnServer.transform.rotation;
-
-                // Correction
-                //otherPlayerOnMyMachine.transform.position = stateMsg.position;
-                //otherPlayerOnMyMachine.transform.rotation = stateMsg.rotation;
-                //otherPlayerOnMyMachine.GetComponent<Rigidbody>().velocity = stateMessage.velocity;
-                //otherPlayerOnMyMachine.GetComponent<Rigidbody>().angularVelocity = stateMessage.angular_velocity;
             }
         }
     }

@@ -350,7 +350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &267833971
 Transform:
   m_ObjectHideFlags: 0
@@ -382,9 +382,8 @@ MonoBehaviour:
   playerId: 1
   otherPeer: {fileID: 1467573344}
   localPlayer: {fileID: 1585945914}
-  displaySimulationOnNetPlayer: {fileID: 163484147}
-  otherPlayerOnMyMachine: {fileID: 1259029291}
-  proxyPlayer: {fileID: 0}
+  myPlayerOnServer: {fileID: 0}
+  displayMyPlayerOnServer: {fileID: 0}
   whatControls: 1
 --- !u!1 &302907037
 GameObject:
@@ -645,12 +644,12 @@ GameObject:
   - component: {fileID: 373054171}
   - component: {fileID: 373054170}
   m_Layer: 0
-  m_Name: Player2OnNet
+  m_Name: Player2OnServer
   m_TagString: Player2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &373054169
 Transform:
   m_ObjectHideFlags: 0
@@ -936,7 +935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &856269823
 Transform:
   m_ObjectHideFlags: 0
@@ -1535,7 +1534,7 @@ GameObject:
   - component: {fileID: 1259029294}
   - component: {fileID: 1259029293}
   m_Layer: 0
-  m_Name: Player1OnNet
+  m_Name: Player1OnServer
   m_TagString: Player1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1800,9 +1799,8 @@ MonoBehaviour:
   playerId: 0
   otherPeer: {fileID: 267833972}
   localPlayer: {fileID: 632630156}
-  displaySimulationOnNetPlayer: {fileID: 856269820}
-  otherPlayerOnMyMachine: {fileID: 373054168}
-  proxyPlayer: {fileID: 0}
+  myPlayerOnServer: {fileID: 1259029291}
+  displayMyPlayerOnServer: {fileID: 856269820}
   whatControls: 0
 --- !u!1 &1585945914
 GameObject:
@@ -1821,7 +1819,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1585945915
 MonoBehaviour:
   m_ObjectHideFlags: 0
