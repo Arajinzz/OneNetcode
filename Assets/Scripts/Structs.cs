@@ -18,7 +18,7 @@ public class Structs
         public float delivery_time;
         public uint tick_number;
         public uint playerId;
-        public Inputs inputs;
+        public List<Inputs> inputs;
     }
 
     public struct PlayerState
