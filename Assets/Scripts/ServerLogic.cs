@@ -31,6 +31,8 @@ public class ServerLogic : MonoBehaviour
     public Queue<Structs.InputMessage> inputMessagesReceived;
     public Queue<Structs.StateMessage> statesToSend;
 
+    private Structs.Inputs lastInputReceived;
+
     void Start()
     {
         serverTimer = 0.0f;
@@ -65,14 +67,24 @@ public class ServerLogic : MonoBehaviour
 
             // Handle a server tick
 
+            //if (inputMessagesReceived.Count == 0)
+            //{
+            //    // Simulate input
+            //    player.GetComponent<Player>().PhysicsStep(lastInputReceived, minTimeBetweenTicks);
+            //    serverPhysicsScene.Simulate(minTimeBetweenTicks);
+            //}
+
             // if server received an input
             while (inputMessagesReceived.Count > 0)
             {
                 Structs.InputMessage input_msg = inputMessagesReceived.Dequeue();
 
+                lastInputReceived = input_msg.inputs;
+
                 // Simulate input
                 player.GetComponent<Player>().PhysicsStep(input_msg.inputs, minTimeBetweenTicks);
                 serverPhysicsScene.Simulate(minTimeBetweenTicks);
+
 
                 // To see how my player moves on the server
                 playerDisplay.transform.position = player.transform.position;

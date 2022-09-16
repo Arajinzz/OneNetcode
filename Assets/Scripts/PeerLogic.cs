@@ -113,14 +113,14 @@ public class PeerLogic : MonoBehaviour
                     localPlayer.GetComponent<Rigidbody>().angularVelocity = stateMsg.angular_velocity;
 
                     // How many ticks we're gonna rewind
-                    uint rewindTick = stateMsg.tick_number + 1;
+                    uint rewindTick = stateMsg.tick_number;
 
                     while (rewindTick < currentTick)
                     {
                         buffer_slot = rewindTick % peerBufferSize;
 
-                        peerBufferStates[buffer_slot].position = stateMsg.position;
-                        peerBufferStates[buffer_slot].rotation = stateMsg.rotation;
+                        peerBufferStates[buffer_slot].position = localPlayer.transform.position;
+                        peerBufferStates[buffer_slot].rotation = localPlayer.transform.rotation;
 
                         localPlayer.GetComponent<Player>().PhysicsStep(peerBufferStates[buffer_slot].inputs, minTimeBetweenTicks);
                         Physics.Simulate(minTimeBetweenTicks);
