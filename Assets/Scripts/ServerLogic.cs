@@ -19,7 +19,7 @@ public class ServerLogic : MonoBehaviour
     public uint serverTick;
     private float minTimeBetweenTicks;
     private const float SERVER_TICK_RATE = 60f;
-    private const float latency = 0.05f;
+    private const float latency = 0.15f;
 
     private float packetLossChance = 0.05f;
 

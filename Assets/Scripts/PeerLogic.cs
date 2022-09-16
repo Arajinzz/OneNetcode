@@ -36,7 +36,7 @@ public class PeerLogic : MonoBehaviour
     private uint currentTick;
     private float minTimeBetweenTicks;
     private const float PEER_TICK_RATE = 60f;
-    private const float latency = 0.05f;
+    private const float latency = 0.15f;
 
     private float packetLossChance = 0.05f;
 
@@ -98,13 +98,36 @@ public class PeerLogic : MonoBehaviour
             /* Simulate received states. */
             while (peerReceivedStates.Count > 0)
             {
-                Structs.StateMessage stateMessage = peerReceivedStates.Dequeue();
+                Structs.StateMessage stateMsg = peerReceivedStates.Dequeue();
 
                 // Correction
-                localPlayer.transform.position = stateMessage.position;
-                localPlayer.transform.rotation = stateMessage.rotation;
-                localPlayer.GetComponent<Rigidbody>().velocity = stateMessage.velocity;
-                localPlayer.GetComponent<Rigidbody>().angularVelocity = stateMessage.angular_velocity;
+                uint buffer_slot = stateMsg.tick_number % peerBufferSize;
+
+                // Check if there's a big error
+                if ((stateMsg.position - peerBufferStates[buffer_slot].position).sqrMagnitude > 0.01f ||
+                     Quaternion.Dot(stateMsg.rotation, peerBufferStates[buffer_slot].rotation) < 0.99f)
+                {
+                    localPlayer.transform.position = stateMsg.position;
+                    localPlayer.transform.rotation = stateMsg.rotation;
+                    localPlayer.GetComponent<Rigidbody>().velocity = stateMsg.velocity;
+                    localPlayer.GetComponent<Rigidbody>().angularVelocity = stateMsg.angular_velocity;
+
+                    // How many ticks we're gonna rewind
+                    uint rewindTick = stateMsg.tick_number + 1;
+
+                    while (rewindTick < currentTick)
+                    {
+                        buffer_slot = rewindTick % peerBufferSize;
+
+                        peerBufferStates[buffer_slot].position = stateMsg.position;
+                        peerBufferStates[buffer_slot].rotation = stateMsg.rotation;
+
+                        localPlayer.GetComponent<Player>().PhysicsStep(peerBufferStates[buffer_slot].inputs, minTimeBetweenTicks);
+                        Physics.Simulate(minTimeBetweenTicks);
+
+                        ++rewindTick;
+                    }
+                }
             }
 
             /* Simulate sending a message to a server with latency. */
