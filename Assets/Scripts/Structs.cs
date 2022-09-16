@@ -17,8 +17,7 @@ public class Structs
     {
         public float delivery_time;
         public uint tick_number;
-        public uint playerId;
-        public List<Inputs> inputs;
+        public Inputs inputs;
     }
 
     public struct PlayerState
@@ -32,7 +31,6 @@ public class Structs
     {
         public float delivery_time;
         public uint tick_number;
-        public uint playerId;
         public Vector3 position; // 12 bytes
         public Quaternion rotation; // 16 bytes
         public Vector3 velocity; // 12 bytes
