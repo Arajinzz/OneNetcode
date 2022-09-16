@@ -19,7 +19,7 @@ public class ServerLogic : MonoBehaviour
     public uint serverTick;
     private float minTimeBetweenTicks;
     private const float SERVER_TICK_RATE = 60f;
-    private const float latency = 0.15f;
+    private const float latency = 0.08f;
 
     private float packetLossChance = 0.05f;
 
@@ -30,8 +30,6 @@ public class ServerLogic : MonoBehaviour
 
     public Queue<Structs.InputMessage> inputMessagesReceived;
     public Queue<Structs.StateMessage> statesToSend;
-
-    private Structs.Inputs lastInputReceived;
 
     void Start()
     {
@@ -67,24 +65,14 @@ public class ServerLogic : MonoBehaviour
 
             // Handle a server tick
 
-            //if (inputMessagesReceived.Count == 0)
-            //{
-            //    // Simulate input
-            //    player.GetComponent<Player>().PhysicsStep(lastInputReceived, minTimeBetweenTicks);
-            //    serverPhysicsScene.Simulate(minTimeBetweenTicks);
-            //}
-
             // if server received an input
             while (inputMessagesReceived.Count > 0)
             {
                 Structs.InputMessage input_msg = inputMessagesReceived.Dequeue();
 
-                lastInputReceived = input_msg.inputs;
-
                 // Simulate input
                 player.GetComponent<Player>().PhysicsStep(input_msg.inputs, minTimeBetweenTicks);
                 serverPhysicsScene.Simulate(minTimeBetweenTicks);
-
 
                 // To see how my player moves on the server
                 playerDisplay.transform.position = player.transform.position;
@@ -93,7 +81,7 @@ public class ServerLogic : MonoBehaviour
                 // Send simulation result to the player
                 Structs.StateMessage stateMessage;
                 stateMessage.delivery_time = Time.time + latency; // time + lag(to simulate ping)
-                stateMessage.tick_number = serverTick;
+                stateMessage.tick_number = input_msg.tick_number + 1;
                 stateMessage.position = player.transform.position;
                 stateMessage.rotation = player.transform.rotation;
                 stateMessage.velocity = player.GetComponent<Rigidbody>().velocity;

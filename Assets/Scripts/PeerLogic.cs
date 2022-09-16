@@ -36,7 +36,7 @@ public class PeerLogic : MonoBehaviour
     private uint currentTick;
     private float minTimeBetweenTicks;
     private const float PEER_TICK_RATE = 60f;
-    private const float latency = 0.15f;
+    private const float latency = 0.08f;
 
     private float packetLossChance = 0.05f;
 
@@ -54,6 +54,7 @@ public class PeerLogic : MonoBehaviour
         peerTimer = 0.0f;
         currentTick = 0;
         minTimeBetweenTicks = 1 / PEER_TICK_RATE;
+
         inputMessagesToSend = new Queue<Structs.InputMessage>();
 
         peerReceivedStates = new Queue<Structs.StateMessage>();
