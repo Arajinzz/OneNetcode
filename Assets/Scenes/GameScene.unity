@@ -1548,8 +1548,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c56002d09935e41bbc1e95a18e183d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  peer: {fileID: 1467573344}
   player: {fileID: 1259029291}
   playerDisplay: {fileID: 856269820}
+  serverTick: 0
 --- !u!4 &1205784604
 Transform:
   m_ObjectHideFlags: 0
@@ -1911,7 +1913,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh29752
+  m_Name: pb_Mesh27356
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

@@ -19,7 +19,9 @@ public class ServerLogic : MonoBehaviour
     public uint serverTick;
     private float minTimeBetweenTicks;
     private const float SERVER_TICK_RATE = 60f;
-    private const float latency = 0.1f;
+    private const float latency = 0.05f;
+
+    private float packetLossChance = 0.05f;
 
     // To avoid calling Physics.Simulate a lot in one scene [in one tick]
     // it makes physics bad
@@ -85,7 +87,10 @@ public class ServerLogic : MonoBehaviour
                 stateMessage.velocity = player.GetComponent<Rigidbody>().velocity;
                 stateMessage.angular_velocity = player.GetComponent<Rigidbody>().angularVelocity;
 
-                statesToSend.Enqueue(stateMessage);
+                if (Random.value > packetLossChance)
+                {
+                    statesToSend.Enqueue(stateMessage);
+                }
             }
 
             /* Simulate sending a message to a client with latency. */

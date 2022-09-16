@@ -36,7 +36,9 @@ public class PeerLogic : MonoBehaviour
     private uint currentTick;
     private float minTimeBetweenTicks;
     private const float PEER_TICK_RATE = 60f;
-    private const float latency = 0.1f;
+    private const float latency = 0.05f;
+
+    private float packetLossChance = 0.05f;
 
     private const int peerBufferSize = 1024;
     private Structs.PlayerState[] peerBufferStates; // Holds position of local player at a given tick
@@ -87,7 +89,11 @@ public class PeerLogic : MonoBehaviour
             inputMsg.delivery_time = Time.time + latency;
             inputMsg.tick_number = currentTick;
             inputMsg.inputs = inputs;
-            inputMessagesToSend.Enqueue(inputMsg);
+
+            if (Random.value > packetLossChance)
+            {
+                inputMessagesToSend.Enqueue(inputMsg);
+            }
 
             /* Simulate received states. */
             while (peerReceivedStates.Count > 0)
